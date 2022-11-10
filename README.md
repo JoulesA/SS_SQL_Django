@@ -29,4 +29,50 @@ Falta formato y que el resto se secciones solo puedan ser accesadas si se rellen
 ![image](https://user-images.githubusercontent.com/57508332/197305911-a7e693c3-a258-422b-9da6-cc6ecaa1550f.png)
 ![image](https://user-images.githubusercontent.com/57508332/197306108-459c1c10-43f1-492c-ad24-ea1e0c4c6309.png)
 
+# Modelo de tablas 
+Codigo que genera los modelos de tablas en el servidor el cual esta montado en CleverCloud
 
+Se plantean 4 tablas las cuales son las principales, proyecto, voluntario, prueba y muestra, ademas de una tabla de usuario que viene por defencto en el framework de DJANGO.
+
+``` Python
+
+class Proyecto(models.Model):
+    id = models.IntegerField(primary_key = True)
+    nombre = models.CharField(max_length=50, )
+    
+    #encargado = models.ForeignKey(User)
+    
+
+class Prueba(models.Model):
+    id = models.IntegerField(primary_key = True)
+    descripcion = models.TextField(max_length=400)
+
+    proyecto = models.ForeignKey(Proyecto, null=True, on_delete=models.CASCADE,)
+
+class Voluntario(models.Model):
+    id = models.IntegerField(primary_key = True)
+    nombre = models.CharField(max_length=50, )
+    edad = models.IntegerField()
+    genero = models.CharField(max_length=50)
+    salud = models.BooleanField()
+    notas = models.TextField(max_length=400, null=True)
+
+    def __str__(self):
+        texto = 'Voluntario No.'+self.id+': '+self.genero+' de '+self.edad+' años'
+        if self.salud:
+            texto += 'Padecimientos: Ninguno'
+        else: 
+            texto += 'Padecimientos: '+self.notas
+        return texto
+
+class Muestra(models.Model):
+    fs = models.FloatField()
+    duracion = models.FloatField()
+    signal_data = models.FileField(upload_to='signal_data/', verbose_name='Datos' )
+
+    prueba = models.ForeignKey(Prueba, on_delete=models.CASCADE,)
+    voluntario = models.ForeignKey(Voluntario, on_delete=models.CASCADE,)
+    
+
+
+```
